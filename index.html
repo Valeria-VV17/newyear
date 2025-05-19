@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Счётчик до Нового Года</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #0a5c36;
+            font-family: 'Arial', sans-serif;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+        }
+
+        .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 90%;
+            max-width: 1200px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .tree {
+            width: 300px;
+            animation: swing 3s infinite alternate ease-in-out;
+        }
+
+        .santa {
+            width: 300px;
+            animation: bounce 2s infinite alternate ease-in-out;
+        }
+
+        .counter {
+            text-align: center;
+            padding: 30px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 20px;
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
+        }
+
+        .counter h1 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .timer {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .timer-item {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 15px;
+            border-radius: 10px;
+            min-width: 80px;
+        }
+
+        .timer-value {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #ffd700;
+        }
+
+        .timer-label {
+            font-size: 1rem;
+            text-transform: uppercase;
+        }
+
+        .snowflake {
+            position: absolute;
+            color: white;
+            user-select: none;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        @keyframes swing {
+            0% { transform: rotate(-5deg); }
+            100% { transform: rotate(5deg); }
+        }
+
+        @keyframes bounce {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-20px); }
+        }
+
+        @media (max-width: 900px) {
+            .container {
+                flex-direction: column;
+            }
+            .tree, .santa {
+                width: 200px;
+            }
+            .timer {
+                flex-wrap: wrap;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img class="tree" src="e9a49832e399eadaadcd4e6cc1d93b46.png" alt="Новогодняя ёлка">
+        
+        <div class="counter">
+            <h1>До Нового Года осталось:</h1>
+            <div class="timer">
+                <div class="timer-item">
+                    <div class="timer-value" id="days">00</div>
+                    <div class="timer-label">Дней</div>
+                </div>
+                <div class="timer-item">
+                    <div class="timer-value" id="hours">00</div>
+                    <div class="timer-label">Часов</div>
+                </div>
+                <div class="timer-item">
+                    <div class="timer-value" id="minutes">00</div>
+                    <div class="timer-label">Минут</div>
+                </div>
+                <div class="timer-item">
+                    <div class="timer-value" id="seconds">00</div>
+                    <div class="timer-label">Секунд</div>
+                </div>
+            </div>
+        </div>
+        
+        <img class="santa" src="307936f59e57ddea0cf681e2b9c5e30c.png" alt="Дед Мороз">
+    </div>
+
+    <script>
+        // Счетчик до Нового года
+        function updateCounter() {
+            const now = new Date();
+            const currentYear = now.getFullYear();
+            const nextYear = currentYear + 1;
+            const newYear = new Date(`January 1, ${nextYear} 00:00:00`);
+            const diff = newYear - now;
+            
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+            
+            document.getElementById('days').textContent = days.toString().padStart(2, '0');
+            document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
+            document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
+            document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
+        }
+        
+        setInterval(updateCounter, 1000);
+        updateCounter();
+        
+        // Снегопад
+        function createSnowflake() {
+            const snowflake = document.createElement('div');
+            snowflake.innerHTML = '❄';
+            snowflake.classList.add('snowflake');
+            
+            // Начальная позиция
+            const startX = Math.random() * window.innerWidth;
+            const startY = -10;
+            const endY = window.innerHeight + 10;
+            
+            // Размер снежинки
+            const size = Math.random() * 20 + 10;
+            
+            // Скорость падения
+            const duration = Math.random() * 5 + 5;
+            
+            // Анимация колебаний
+            const amplitude = Math.random() * 100 + 50;
+            const frequency = Math.random() * 0.02 + 0.01;
+            
+            // Применяем стили
+            snowflake.style.left = `${startX}px`;
+            snowflake.style.top = `${startY}px`;
+            snowflake.style.fontSize = `${size}px`;
+            snowflake.style.opacity = Math.random() * 0.5 + 0.5;
+            
+            document.body.appendChild(snowflake);
+            
+            let startTime = null;
+            
+            function animateSnowflake(timestamp) {
+                if (!startTime) startTime = timestamp;
+                const progress = (timestamp - startTime) / 1000; // в секундах
+                
+                // Позиция по Y
+                const y = startY + (endY - startY) * (progress / duration);
+                
+                // Позиция по X (колебания)
+                const x = startX + amplitude * Math.sin(progress * frequency * 2 * Math.PI);
+                
+                snowflake.style.transform = `translate(${x - startX}px, ${y - startY}px)`;
+                
+                if (progress < duration) {
+                    requestAnimationFrame(animateSnowflake);
+                } else {
+                    snowflake.remove();
+                    createSnowflake(); // Создаем новую снежинку
+                }
+            }
+            
+            requestAnimationFrame(animateSnowflake);
+        }
+        
+        // Создаем снежинки
+        for (let i = 0; i < 50; i++) {
+            setTimeout(() => {
+                createSnowflake();
+                setInterval(createSnowflake, 2000); // Новые снежинки каждые 2 секунды
+            }, i * 200);
+        }
+    </script>
+</body>
+</html>
